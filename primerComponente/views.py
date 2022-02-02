@@ -12,7 +12,7 @@ from primerComponente.models import PrimerModelo
 
 import json
 
-def res_custom(custom, responseData, stats):
+def response_custom(custom, responseData, stats):
         respuesta ={}
         if custom == "succes":
             respuesta = json.loads(resexito)
@@ -43,9 +43,58 @@ class PrimerViewList(APIView):
         serializer = PrimerTablaSerializer(data=request.data, context={"request":request})
         if serializer.is_valid():
             serializer.save()            
-            return Response(res_custom.response_custom(serializer.data,status.HTTP_201_CREATED,'resbien'))
+            return Response(response_custom.response_custom(serializer.data,status.HTTP_201_CREATED,'resbien'))
         else:
-            return Response(res_custom.response_custom(serializer.errors,status.HTTP_400_BAD_REQUEST,'resmal'))
+            return Response(response_custom.response_custom(serializer.errors,status.HTTP_400_BAD_REQUEST,'resmal'))
             
+class PrimerViewDetail(APIView):
     
+    def get_object(self,pk):
+        try:
+            return PrimerModelo.objects.get(pk=pk)
+        except PrimerModelo.DoesNotExist:
+            return 404
+
+
+    def get(self,request,pk,format=None):
+        idResponse = self.get_object(pk)        
+        if idResponse != 404:
+            serializer = PrimerTablaSerializer(idResponse,context={"request":request})
+            
+            return Response(response_custom(serializer.data,status.HTTP_200_OK, 'resbien'))
+            #return response(serializer.data, status=status.HTTP_200_OK)
+            #return Response(serializer.data, status=status.HTTP_200_OK)
+        else:            
+            #return Response("no encontrado",status=status.HTTP_400_BAD_REQUEST)
+            return Response(response_custom("ID no encontrado",status.HTTP_400_BAD_REQUEST, 'resmal'))
+    
+    def put(self,request,pk,format=None):
+        idResponse = self.get_object(pk)        
+        if idResponse != 404:
+            serializer = PrimerTablaSerializer(idResponse, data=request.data, context={"request":request})
+            if serializer.is_valid():                
+                serializer.save()
+                #return response(serializer.data, status=status.HTTP_200_OK)
+                return Response(response_custom(serializer.data,status.HTTP_200_OK,'resbien'))
+            else:
+                #return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_custom(serializer.errors,status.HTTP_400_BAD_REQUEST,'resmal'))
+        else:
+            #retunr Response("no encontrado",status=status.HTTP_400_BAD_REQUEST)
+            #return Response("no encontrado",status=status.HTTP_400_BAD_REQUEST)
+            return Response(response_custom("ID no encontrado",status.HTTP_400_BAD_REQUEST,'resmal'))
+
+    def delete(self,request,pk,format=None):
+        idResponse = self.get_object(pk)        
+        if idResponse != 404:
+            serializer = PrimerTablaSerializer(idResponse, data=request.data, context={"request":request})
+            if serializer.is_valid():                
+                idResponse.delete()
+                
+                return Response(response_custom('succes',serializer.data,status.HTTP_200_OK,'resbien'))
+                #return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(response_custom('error',serializer.errors,status.HTTP_400_BAD_REQUEST))
+        else:
+            return Response(response_custom("ID no encontrado",status.HTTP_400_BAD_REQUEST, 'resmal'))
        
