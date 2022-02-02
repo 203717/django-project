@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include,re_path
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
@@ -13,9 +13,10 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 router = routers.DefaultRouter()
-router.register(r'Usuarios', UserViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
+    re_path(r'^api/v1/login/', include('Login.urls')),
 ]
