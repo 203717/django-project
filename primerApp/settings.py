@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'primerComponente',
     'Login',
 
+
     #Para el proyecto
     'rest_framework',
     'rest_framework.authtoken',
