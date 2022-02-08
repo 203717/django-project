@@ -37,7 +37,6 @@ class PrimerViewList(APIView):
         serializer = PrimerTablaSerializer(querySet,many=True , context={'request':request})
         #print(responser_custom('succes',serializer.data,'good'))    
         return Response(serializer.data)
-        return Response(responser_custom('succes',serializer.data, status.HTTP_200_OK))
 
     def post(self, request, format=None):
         serializer = PrimerTablaSerializer(data=request.data, context={"request":request})

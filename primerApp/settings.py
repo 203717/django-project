@@ -1,25 +1,37 @@
 
-
+import environ
+import os
 from pathlib import Path
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Set the project base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =True
+
+
+SECRET_KEY=env('SECRET_KEY')
 
 ALLOWED_HOSTS = []
+ 
 
+MEDIA_URL = '/assets/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Application definition
 
@@ -34,6 +46,8 @@ INSTALLED_APPS = [
     #componentes nuevos
     'primerComponente',
     'Login',
+    'register',
+    'loadImage',
 
 
     #Para el proyecto
@@ -81,7 +95,16 @@ WSGI_APPLICATION = 'primerApp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+DATABASES = {
+    'default': {
+        'ENGINE':  env('ENGINE'),
+        'NAME': env('NAME'),
+        'USER': env('USER'),
+        'PASSWORD': env('PASSWORD'),
+        'HOST': env('HOST'),
+        'PORT':  env('PORT')
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -128,4 +151,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 try:
     from primerApp.local_settings import *
 except ImportError:
-    pass
+    pass     
