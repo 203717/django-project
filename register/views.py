@@ -1,28 +1,44 @@
-import json
+from urllib import request
 from rest_framework.views import APIView 
-from rest_framework import status
-from django.contrib.auth.models import User
-
-from .serializers import RegisterSerializer
 from rest_framework.response import Response
 
-resexito= '{"message": "Exitoso"}'
-reserror= '{"message": "Error"}'
+from django.contrib.auth.models import User
+from .serializers import FirstSerializerRegister
+import json
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 
-def response_custom(responseData, stats, custom ):
-    Res =""
-    if custom == "resexito":
-        Res = json.loads(resexito)
-    else:
-        Res = json.loads(reserror)
-    Res.update({'pay_load':responseData})
-    Res.update({'status':stats}) 
-    return Res
+from django.contrib.auth.models import User
+from .serializers import RegisterSerializer
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
-class RegistroView(APIView):
-    def post(self, request, format=None):       
-        serializer=RegisterSerializer(data=request.data, context={'request':request})
+
+
+
+suce = '{ "message":"succes"}'
+error = '{ "message":"error"}'
+
+
+def responser_custom(custom, responseData, stats):
+        respuesta =""
+        if custom == "succes":
+            respuesta = json.loads(suce)
+        else:
+            respuesta = json.loads(error)
+        respuesta.update({'pay_load':responseData})
+        respuesta.update({'status':stats}) 
+        return respuesta
+       
+
+class RegisterView(APIView):
+    permission_classes = (AllowAny,)
+    
+    def post(self, request, format=None):      
+    
+        serializer= FirstSerializerRegister(data=request.data, context={'request':request})
+        
         if serializer.is_valid():
             datos = request.data               
             username = str(datos.__getitem__('username'))
@@ -33,17 +49,19 @@ class RegistroView(APIView):
             username = username,
             email = email
             )
-    
+                          
             user.set_password(password)
-            user.is_superuser = False
+            user.is_superuser = True
             user.is_staff = True
             user.save()    
 
-            return Response(response_custom(serializer.data,status.HTTP_201_CREATED,'resexito'))
+            return Response(responser_custom('succes',"Usuario creado",status.HTTP_201_CREATED))
         else:
-            return Response(response_custom(serializer.errors,status.HTTP_400_BAD_REQUEST,'reserror'))
-    
-    def get(self, request, format=None):
-        querySet = User.objects.all()
-        serializer =RegisterSerializer(querySet, many=True , context= {'request':request})        
-        return Response(response_custom('succes',serializer.data, status.HTTP_200_OK))
+            return Response(responser_custom('error',serializer.errors,status.HTTP_400_BAD_REQUEST))
+   
+
+
+class RegisterViewNew(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
