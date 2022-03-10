@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
 from register.serializers import RegisterSerializer
 from Profile.models import Profile
 from Profile.serializers import ProfileSerializerRegister,RegisterSerializer2
@@ -10,7 +11,8 @@ from rest_framework.views import APIView
 import os
 # Create your views here.
 
-class RegisterIdView(APIView):   
+class RegisterIdView(APIView):
+    
 
     def get_objectU(self,pk):
         try:
@@ -20,7 +22,7 @@ class RegisterIdView(APIView):
     
     def get_objectP(self,pk):
         try:
-            return Profile.objects.get(id_user_profile=pk)
+            return Profile.objects.get(user=pk)
         except Profile.DoesNotExist:
             return 404  
      
@@ -41,6 +43,11 @@ class RegisterIdView(APIView):
                 respuesta.update({"img_profile":serializerP.data.__getitem__("img_profile")})                
                 
                 return Response(respuesta)
+            else:                                 
+                respuesta = json.dumps(serializer.data)                
+                respuesta = json.loads(respuesta)
+                respuesta.update( {"img_profile":None})
+                return Response(respuesta)
 
         else:                        
             return Response(status.HTTP_400_BAD_REQUEST)
@@ -54,6 +61,15 @@ class RegisterIdView(APIView):
             profil = ProfileSerializerRegister(idResponseP,data=request.data, context={"request":request})                                    
                         
             if profil.is_valid() and user.is_valid():                            
+
+                if "img_profile" in request.data:
+                    
+                    nameImg = str(idResponseP.img_profile).split("/")[1]                
+                    
+                    file_path = "assets/img_profile/"+nameImg
+                    if os.path.isfile(file_path):                                            
+                        os.remove(file_path)                       
+                    
                 user.save()                  
                 profil.save()    
                        
