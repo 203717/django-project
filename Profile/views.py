@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
 from register.serializers import RegisterSerializer
 from Profile.models import Profile
-from Profile.serializers import ProfileSerializerRegister,RegisterSerializer2
+from Profile.serializers import ProfileSeria, RegisSeria
 import json
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,7 +22,7 @@ class RegisterIdView(APIView):
     
     def get_objectP(self,pk):
         try:
-            return Profile.objects.get(user=pk)
+            return Profile.objects.get(id_user_profile=pk)
         except Profile.DoesNotExist:
             return 404  
      
@@ -36,7 +36,7 @@ class RegisterIdView(APIView):
             idResponseP = self.get_objectP(pk)
 
             if idResponseP != 404:
-                serializerP = ProfileSerializerRegister(idResponseP,context={"request":request})
+                serializerP = ProfileSeria(idResponseP,context={"request":request})
                
                 respuesta = json.dumps(serializer.data)
                 respuesta = json.loads(respuesta)
@@ -57,8 +57,8 @@ class RegisterIdView(APIView):
         idResponseP = self.get_objectP(pk)             
                        
         if idResponse != 404 and idResponseP != 404:       
-            user = RegisterSerializer2(idResponse,data=request.data, context={"request":request}) 
-            profil = ProfileSerializerRegister(idResponseP,data=request.data, context={"request":request})                                    
+            user = RegisSeria(idResponse,data=request.data, context={"request":request}) 
+            profil =ProfileSeria(idResponseP,data=request.data, context={"request":request})                                    
                         
             if profil.is_valid() and user.is_valid():                            
 

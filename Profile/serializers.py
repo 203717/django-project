@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from Profile.models import Profile
 from rest_framework import serializers
 
-class RegisterSerializer2(serializers.ModelSerializer):
+class RegisSeria(serializers.ModelSerializer):
 
     class Meta:
        model = User
@@ -13,7 +13,7 @@ class RegisterSerializer2(serializers.ModelSerializer):
        }
    
 
-class ProfileSerializerRegister(serializers.ModelSerializer):
+class ProfileSeria(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id_user_profile', 'img_profile')
