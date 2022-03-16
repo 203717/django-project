@@ -57,13 +57,14 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
-    'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.TokenAuthentication',),
-    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE':100,
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+REST_FRAMEWORK = { 
+        'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',), 
+        'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.TokenAuthentication',  
+            'rest_framework_simplejwt.authentication.JWTAuthentication',), 
+        'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination', 
+        'PAGE_SIZE':100, 
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,8 +77,13 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
+JWT_AUTH = {
+    # Authorization:Token xxx
+    'JWT_AUTH_HEADER_PREFIX': 'Token',
+}
+
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    'http://localhost:3000',
 ]
 
 

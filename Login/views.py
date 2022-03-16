@@ -22,4 +22,4 @@ class LoginAuth(ObtainAuthToken):
 
 class MyObtainTokenPairView(TokenObtainPairView):
    permission_classes = (AllowAny,)
-   serializer_class = MyTokenObtainPairSerializer
+   serializer_class = MyTokenObtainPairSerializer 

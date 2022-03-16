@@ -1,17 +1,15 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
-from register.serializers import RegisterSerializer
-from Profile.models import Profile
-from Profile.serializers import ProfileSeria, RegisSeria
-import json
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView 
-import os
-# Create your views here.
-
+from django.shortcuts import render;
+from django.contrib.auth.models import User;
+from register.serializers import RegisterSerializer;
+from Profile.models import Profile;
+from Profile.serializers import ProfileSeria, RegisSeria;
+from rest_framework.response import Response;
+from rest_framework import status;
+import os;
+import json;
+from rest_framework.views import APIView; 
 class RegisterIdView(APIView):
+
     
 
     def get_objectU(self,pk):
@@ -62,19 +60,11 @@ class RegisterIdView(APIView):
                         
             if profil.is_valid() and user.is_valid():                            
 
-                if "img_profile" in request.data:
-                    
-                    nameImg = str(idResponseP.img_profile).split("/")[1]                
-                    
-                    file_path = "assets/img_profile/"+nameImg
-                    if os.path.isfile(file_path):                                            
-                        os.remove(file_path)                       
-                    
                 user.save()                  
                 profil.save()    
                        
                 return Response(status.HTTP_200_OK)
             else:     
-                return Response(status.HTTP_400_BAD_REQUEST)
+                return Response(profil.data)
         else:            
             return Response("Id no encontrado",status.HTTP_400_BAD_REQUEST) 
